@@ -1,4 +1,3 @@
-
 {- Flatten a nested list structure. -}
 flattenList :: [[a]] -> [a]
 flattenList [] = []
