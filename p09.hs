@@ -17,6 +17,7 @@ trimInit l@(h:t) p | p == 0 = l
 packConsecutives :: (Eq a) => [a] -> [[a]]
 packConsecutives [] = []
 packConsecutives [x] = [[x]]
-packConsecutives l@(h:t) = [nList] ++ (packConsecutives (trimInit l (sizeOf nList)))
+packConsecutives l@(h:t) = [nList] ++ (packConsecutives rest)
                            where nList = takeWhile (\x -> x == h) l
+                                 rest = trimInit l (sizeOf nList)
 

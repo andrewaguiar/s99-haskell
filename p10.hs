@@ -17,6 +17,8 @@ trimInit l@(h:t) p | p == 0 = l
 runLengthEncoding :: (Eq a) => [a] -> [(Int, a)]
 runLengthEncoding [] = []
 runLengthEncoding [x] = [(1, x)]
-runLengthEncoding l@(h:t) = ((sizeOf nList), h):runLengthEncoding (trimInit l (sizeOf nList))
+runLengthEncoding l@(h:t) = (len, h):runLengthEncoding rest
                             where nList = takeWhile (\x -> x == h) l
+                                  len = sizeOf nList
+                                  rest = trimInit l len
 
