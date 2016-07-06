@@ -1,13 +1,3 @@
-myTakeWhile :: (a -> Bool) -> [a] -> [a]
-myTakeWhile fn [] = []
-myTakeWhile fn (h:t) | fn(h) = h:myTakeWhile fn t
-                     | otherwise = []
-
-sizeOf :: [a] -> Int
-sizeOf [] = 0
-sizeOf [x] = 1
-sizeOf (h:t) = 1 + (sizeOf t)
-
 trimInit :: [a] -> Int -> [a]
 trimInit [] _ = []
 trimInit l@(h:t) p | p == 0 = l
@@ -19,5 +9,5 @@ packConsecutives [] = []
 packConsecutives [x] = [[x]]
 packConsecutives l@(h:t) = [nList] ++ (packConsecutives rest)
                            where nList = takeWhile (\x -> x == h) l
-                                 rest = trimInit l (sizeOf nList)
+                                 rest = trimInit l (length nList)
 

@@ -17,4 +17,6 @@ firstPart x l@(h:t) | x > 0 = h:(firstPart nx t)
 rotateList :: Int -> [a] -> [a]
 rotateList _ [] = []
 rotateList 0 l = l
-rotateList x l = lastPart x l ++ firstPart x l
+rotateList x l | x > 0 = lastPart x l ++ firstPart x l
+               | otherwise = lastPart nx l ++ firstPart nx l
+               where nx = length l - abs x
