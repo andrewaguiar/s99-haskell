@@ -1,5 +1,6 @@
 module TFIDF (
   tfIdfTerm,
+  search,
   Document(..),
   Corpus(..)
 ) where
@@ -21,7 +22,7 @@ countTermsInDoc (Document _ content) term = length $ filter (\s -> s == term) do
 docHasTerm :: Document -> String -> Bool
 docHasTerm doc term = (countTermsInDoc doc term) > 0
 
--- TF: Term frequency = 1 + log f / t
+-- TF: Term frequency = 1 - f / t
 --
 -- f = number of terms in the document.
 -- t = total of terms in the document.
@@ -29,13 +30,13 @@ docHasTerm doc term = (countTermsInDoc doc term) > 0
 tf :: Document -> String -> Float
 tf (Document _ "") _ =  0.0
 tf (Document _ _) "" =  0.0
-tf doc@(Document _ content) term | termInDoc == 0         = 0
-                                 | totalOfTermsInDoc == 0 = 0
-                                 | otherwise              = 1.0 + (log (termInDoc / totalOfTermsInDoc))
+tf doc@(Document _ content) term | termInDoc == 0         = 0.0
+                                 | totalOfTermsInDoc == 0 = 0.0
+                                 | otherwise              = 1.0 - termInDoc / totalOfTermsInDoc
                                  where termInDoc          = fromIntegral $ countTermsInDoc doc term
                                        totalOfTermsInDoc  = fromIntegral $ length $ words content
 
--- IDF: Inverse document frequency = log ( 1 + t / d).
+-- IDF: Inverse document frequency = 1 - (t / d).
 --
 -- t = total of documents in the corpus.
 -- d = number of documents containing the term in the corpus.
@@ -43,7 +44,7 @@ tf doc@(Document _ content) term | termInDoc == 0         = 0
 idf :: Corpus -> String -> Float
 idf (Corpus []) _ = 0.0
 idf _ "" = 0.0
-idf (Corpus docs) term = log $ 1 + totalDocsInCorpus / documentsContainingTheTerm
+idf (Corpus docs) term = 1.0 - documentsContainingTheTerm / totalDocsInCorpus
                          where totalDocsInCorpus          = fromIntegral $ length docs
                                documentsContainingTheTerm = fromIntegral $ length $ filter (\d -> docHasTerm d term) docs
 
@@ -62,4 +63,8 @@ tfIdfTerm _ "" = []
 tfIdfTerm corpus@(Corpus docs) term = tfIdfDocument docs vIdf term
                                    -- First I calculate the idf then pass the value already processed
                                    where vIdf = idf corpus term
+
+search :: Corpus -> String -> [(Document, Float)]
+search corpus@(Corpus docs) term = filter (\(_, score) -> score > 0.0) result
+                                   where result = tfIdfTerm corpus term
 

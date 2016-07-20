@@ -18,6 +18,7 @@ main = do
   let docs = toDocs linesOfFiles
   let corpus = Corpus docs
 
-  let docsAnalysed = Tfidf.tfIdfTerm corpus $ args !! 1
+  let docsAnalysed = Tfidf.search corpus $ args !! 1
 
+  print show length docsAnalysed
   mapM_ print docsAnalysed
