@@ -20,5 +20,5 @@ main = do
 
   let docsAnalysed = Tfidf.search corpus $ args !! 1
 
-  print show length docsAnalysed
+  print $ show $ length docsAnalysed
   mapM_ print docsAnalysed
